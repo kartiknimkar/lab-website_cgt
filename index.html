@@ -1,0 +1,217 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Cocucci Lab | The Ohio State University</title>
+    <meta
+      name="description"
+      content="Cocucci Lab at The Ohio State University studies membrane trafficking, extracellular vesicles, and nanovector drug delivery in cancer."
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Syne:wght@600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <canvas id="particle-field" aria-hidden="true"></canvas>
+    <header class="site-header">
+      <a class="brand" href="#top">Cocucci Lab</a>
+      <nav class="nav">
+        <a href="#about">About</a>
+        <a href="#research">Research</a>
+        <a href="#papers">Papers</a>
+        <a href="#contact">Contact</a>
+      </nav>
+      <a class="cta" href="#papers">Explore Work</a>
+    </header>
+
+    <main id="top">
+      <section class="hero section reveal">
+        <p class="eyebrow">The Ohio State University • College of Pharmacy</p>
+        <h1>
+          Decoding membrane trafficking and extracellular vesicles in
+          <span>cancer biology</span>
+        </h1>
+        <p>
+          Led by <strong>Dr. Emanuele Cocucci, MD, PhD</strong>, the lab studies
+          how cells internalize signals, exchange information through
+          extracellular vesicles, and how these pathways can be targeted for
+          better cancer therapies and drug delivery.
+        </p>
+        <div class="hero-actions">
+          <a class="btn btn-solid" href="#research">Research Themes</a>
+          <a class="btn btn-ghost" href="#papers">Featured Papers</a>
+        </div>
+      </section>
+
+      <section id="about" class="section reveal">
+        <h2>Brief Summary</h2>
+        <div class="card-grid">
+          <article class="card">
+            <h3>Endocytosis & Membrane Dynamics</h3>
+            <p>
+              Investigating the mechanisms of clathrin-mediated endocytosis and
+              membrane scission, including dynamin recruitment and vesicle
+              formation in live cells.
+            </p>
+          </article>
+          <article class="card">
+            <h3>Extracellular Vesicles</h3>
+            <p>
+              Understanding ectosomes and other extracellular vesicles as
+              communication channels in tumor microenvironments and disease
+              progression.
+            </p>
+          </article>
+          <article class="card">
+            <h3>Cancer & Nanovector Delivery</h3>
+            <p>
+              Defining how membrane trafficking differs in cancer and improving
+              delivery/internalization strategies for therapeutic nanovectors.
+            </p>
+          </article>
+        </div>
+      </section>
+
+      <section id="research" class="section reveal">
+        <h2>Research Sections</h2>
+        <div class="timeline">
+          <article>
+            <span class="dot"></span>
+            <h3>Single-Molecule Quantitative Imaging</h3>
+            <p>
+              High-resolution microscopy and quantitative analysis to map vesicle
+              assembly, molecular stoichiometry, and trafficking kinetics.
+            </p>
+          </article>
+          <article>
+            <span class="dot"></span>
+            <h3>Mechanisms of Vesicle Biogenesis</h3>
+            <p>
+              Tracking how endocytic and extracellular vesicles form and scission
+              events are coordinated across space and time.
+            </p>
+          </article>
+          <article>
+            <span class="dot"></span>
+            <h3>Translational Direction</h3>
+            <p>
+              Translating trafficking biology into actionable targets for
+              anti-cancer treatment and precision drug delivery.
+            </p>
+          </article>
+        </div>
+      </section>
+
+      <section id="papers" class="section reveal">
+        <h2>Featured Papers</h2>
+        <div class="papers">
+          <article class="paper">
+            <p class="paper-year">2014</p>
+            <h3>Dynamin recruitment and membrane scission at coated pits</h3>
+            <p>
+              Molecular Biology of the Cell. A foundational quantitative analysis
+              of dynamin dynamics during clathrin-mediated endocytosis.
+            </p>
+            <a
+              href="https://doi.org/10.1091/mbc.E14-07-1240"
+              target="_blank"
+              rel="noreferrer"
+              >DOI</a
+            >
+          </article>
+          <article class="paper">
+            <p class="paper-year">2018</p>
+            <h3>
+              Measuring Clathrin-Coated Vesicle Formation with Single-Molecule
+              Resolution
+            </h3>
+            <p>
+              Methods in Molecular Biology. Experimental and analytical workflow
+              for quantitative endocytic imaging.
+            </p>
+            <a
+              href="https://doi.org/10.1007/978-1-4939-8719-1_15"
+              target="_blank"
+              rel="noreferrer"
+              >DOI</a
+            >
+          </article>
+          <article class="paper">
+            <p class="paper-year">2011</p>
+            <h3>Ectosomes</h3>
+            <p>
+              Current Biology. A concise perspective on ectosome biology and
+              extracellular vesicle-mediated communication.
+            </p>
+            <a
+              href="https://doi.org/10.1016/j.cub.2011.10.011"
+              target="_blank"
+              rel="noreferrer"
+              >DOI</a
+            >
+          </article>
+          <article class="paper">
+            <p class="paper-year">2025</p>
+            <h3>
+              Exploring the Spatial Limits of Extracellular Vesicle Communication
+            </h3>
+            <p>
+              Journal of Extracellular Vesicles. Expands quantitative understanding
+              of EV-mediated intercellular signaling constraints.
+            </p>
+            <a href="https://u.osu.edu/cocuccilab/publications/" target="_blank" rel="noreferrer"
+              >Lab Publications</a
+            >
+          </article>
+        </div>
+      </section>
+
+      <section class="section reveal extras">
+        <h2>What Else</h2>
+        <div class="extras-grid">
+          <article>
+            <h3>Techniques</h3>
+            <p>
+              Live-cell fluorescence microscopy, biochemistry, quantitative image
+              analysis, and vesicle isolation/characterization workflows.
+            </p>
+          </article>
+          <article>
+            <h3>Collaborations</h3>
+            <p>
+              Interdisciplinary work across cancer biology, drug delivery,
+              quantitative imaging, and translational therapeutics.
+            </p>
+          </article>
+          <article>
+            <h3>Open Positions</h3>
+            <p>
+              Prospective trainees can contribute to high-impact membrane biology
+              and cancer-focused projects at the interface of basic and applied
+              science.
+            </p>
+          </article>
+        </div>
+      </section>
+    </main>
+
+    <footer id="contact" class="site-footer reveal">
+      <p>
+        Dr. Emanuele Cocucci • Associate Professor, Pharmaceutics & Pharmacology
+      </p>
+      <p>
+        The Ohio State University College of Pharmacy •
+        <a href="https://pharmacy.osu.edu/directory/emanuele-cocucci" target="_blank" rel="noreferrer"
+          >Faculty Profile</a
+        >
+      </p>
+    </footer>
+
+    <script src="script.js"></script>
+  </body>
+</html>
