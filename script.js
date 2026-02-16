@@ -4,11 +4,14 @@ const canvas = document.getElementById("particle-field");
 const ctx = canvas.getContext("2d");
 const cursorGlow = document.querySelector(".cursor-glow");
 const hero = document.querySelector(".hero");
+const heroVisual = document.querySelector(".hero-visual");
 const introLoader = document.getElementById("intro-loader");
 const loaderProgress = document.getElementById("loader-progress");
 const loaderCount = document.getElementById("loader-count");
 
 let particles = [];
+let vesicles = [];
+let cells = [];
 const pointer = { x: window.innerWidth / 2, y: window.innerHeight / 2, active: false };
 
 function sizeCanvas() {
@@ -21,13 +24,31 @@ function sizeCanvas() {
 }
 
 function buildParticles() {
-  const count = Math.min(110, Math.floor(window.innerWidth / 10));
+  const count = Math.min(110, Math.floor(window.innerWidth / 11));
   particles = Array.from({ length: count }, () => ({
     x: Math.random() * window.innerWidth,
     y: Math.random() * window.innerHeight,
-    r: Math.random() * 1.8 + 0.6,
-    vx: (Math.random() - 0.5) * 0.42,
-    vy: (Math.random() - 0.5) * 0.42
+    r: Math.random() * 1.5 + 0.7,
+    vx: (Math.random() - 0.5) * 0.3,
+    vy: (Math.random() - 0.5) * 0.3
+  }));
+
+  const vesicleCount = Math.min(24, Math.floor(window.innerWidth / 70));
+  vesicles = Array.from({ length: vesicleCount }, () => ({
+    x: Math.random() * window.innerWidth,
+    y: Math.random() * window.innerHeight,
+    r: Math.random() * 6 + 4,
+    vx: (Math.random() - 0.5) * 0.45,
+    vy: (Math.random() - 0.5) * 0.45,
+    phase: Math.random() * Math.PI * 2
+  }));
+
+  cells = Array.from({ length: 3 }, () => ({
+    x: Math.random() * window.innerWidth,
+    y: Math.random() * window.innerHeight,
+    r: Math.max(160, Math.min(window.innerWidth, window.innerHeight) * (0.14 + Math.random() * 0.1)),
+    drift: (Math.random() - 0.5) * 0.22,
+    phase: Math.random() * Math.PI * 2
   }));
 }
 
@@ -35,6 +56,26 @@ function animateParticles() {
   if (prefersReducedMotion) return;
 
   ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
+  const time = performance.now() * 0.001;
+
+  for (const cell of cells) {
+    const wobbleX = Math.sin(time * 0.2 + cell.phase) * 24;
+    const wobbleY = Math.cos(time * 0.16 + cell.phase) * 18;
+    const cx = cell.x + wobbleX;
+    const cy = cell.y + wobbleY;
+    const gradient = ctx.createRadialGradient(cx, cy, cell.r * 0.28, cx, cy, cell.r);
+    gradient.addColorStop(0, "rgba(75, 211, 176, 0.07)");
+    gradient.addColorStop(0.55, "rgba(75, 211, 176, 0.03)");
+    gradient.addColorStop(1, "rgba(75, 211, 176, 0)");
+
+    ctx.beginPath();
+    ctx.arc(cx, cy, cell.r, 0, Math.PI * 2);
+    ctx.fillStyle = gradient;
+    ctx.fill();
+    ctx.lineWidth = 1.2;
+    ctx.strokeStyle = "rgba(150, 235, 220, 0.16)";
+    ctx.stroke();
+  }
 
   for (let i = 0; i < particles.length; i += 1) {
     const p = particles[i];
@@ -42,24 +83,24 @@ function animateParticles() {
     const dxPointer = pointer.x - p.x;
     const dyPointer = pointer.y - p.y;
     const pointerDist = Math.hypot(dxPointer, dyPointer) || 1;
-    const pointerPull = Math.max(0, 130 - pointerDist) / 3600;
+    const pointerPull = Math.max(0, 120 - pointerDist) / 4200;
 
     p.vx += (dxPointer / pointerDist) * pointerPull;
     p.vy += (dyPointer / pointerDist) * pointerPull;
-    p.vx *= 0.988;
-    p.vy *= 0.988;
+    p.vx *= 0.991;
+    p.vy *= 0.991;
 
     p.x += p.vx;
     p.y += p.vy;
 
-    if (p.x < -15) p.x = window.innerWidth + 15;
-    if (p.x > window.innerWidth + 15) p.x = -15;
-    if (p.y < -15) p.y = window.innerHeight + 15;
-    if (p.y > window.innerHeight + 15) p.y = -15;
+    if (p.x < -10) p.x = window.innerWidth + 10;
+    if (p.x > window.innerWidth + 10) p.x = -10;
+    if (p.y < -10) p.y = window.innerHeight + 10;
+    if (p.y > window.innerHeight + 10) p.y = -10;
 
     ctx.beginPath();
     ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-    ctx.fillStyle = "rgba(95, 221, 190, 0.62)";
+    ctx.fillStyle = "rgba(255, 188, 145, 0.82)";
     ctx.fill();
 
     for (let j = i + 1; j < particles.length; j += 1) {
@@ -67,16 +108,49 @@ function animateParticles() {
       const dx = p.x - q.x;
       const dy = p.y - q.y;
       const dist = Math.hypot(dx, dy);
-      if (dist < 105) {
-        const alpha = (1 - dist / 105) * 0.23;
+      if (dist < 92) {
+        const alpha = (1 - dist / 92) * 0.24;
         ctx.beginPath();
         ctx.moveTo(p.x, p.y);
         ctx.lineTo(q.x, q.y);
-        ctx.strokeStyle = `rgba(120, 190, 255, ${alpha})`;
-        ctx.lineWidth = 1;
+        ctx.strokeStyle = `rgba(255, 160, 115, ${alpha})`;
+        ctx.lineWidth = 0.9;
         ctx.stroke();
       }
     }
+  }
+
+  for (const vesicle of vesicles) {
+    const dxPointer = pointer.x - vesicle.x;
+    const dyPointer = pointer.y - vesicle.y;
+    const distPointer = Math.hypot(dxPointer, dyPointer) || 1;
+    const pull = Math.max(0, 160 - distPointer) / 7200;
+
+    vesicle.vx += (dxPointer / distPointer) * pull;
+    vesicle.vy += (dyPointer / distPointer) * pull;
+    vesicle.vx *= 0.985;
+    vesicle.vy *= 0.985;
+
+    vesicle.x += vesicle.vx + Math.sin(time + vesicle.phase) * 0.18;
+    vesicle.y += vesicle.vy + Math.cos(time * 1.1 + vesicle.phase) * 0.18;
+
+    if (vesicle.x < -30) vesicle.x = window.innerWidth + 30;
+    if (vesicle.x > window.innerWidth + 30) vesicle.x = -30;
+    if (vesicle.y < -30) vesicle.y = window.innerHeight + 30;
+    if (vesicle.y > window.innerHeight + 30) vesicle.y = -30;
+
+    ctx.beginPath();
+    ctx.arc(vesicle.x, vesicle.y, vesicle.r, 0, Math.PI * 2);
+    ctx.fillStyle = "rgba(140, 243, 220, 0.14)";
+    ctx.fill();
+    ctx.lineWidth = 1.5;
+    ctx.strokeStyle = "rgba(175, 255, 236, 0.72)";
+    ctx.stroke();
+
+    ctx.beginPath();
+    ctx.arc(vesicle.x + vesicle.r * 0.15, vesicle.y - vesicle.r * 0.12, vesicle.r * 0.32, 0, Math.PI * 2);
+    ctx.fillStyle = "rgba(210, 255, 246, 0.78)";
+    ctx.fill();
   }
 
   requestAnimationFrame(animateParticles);
@@ -193,6 +267,12 @@ function setupPointerTracking() {
   const updatePointer = (x, y) => {
     pointer.x = x;
     pointer.y = y;
+    if (heroVisual) {
+      const rx = ((x / window.innerWidth) - 0.5) * 14;
+      const ry = ((y / window.innerHeight) - 0.5) * 14;
+      heroVisual.style.setProperty("--hero-x", `${rx}px`);
+      heroVisual.style.setProperty("--hero-y", `${ry}px`);
+    }
     if (cursorGlow) {
       cursorGlow.style.opacity = "1";
       cursorGlow.style.transform = `translate(${x}px, ${y}px)`;
