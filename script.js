@@ -75,6 +75,30 @@ function animateParticles() {
     ctx.lineWidth = 1.2;
     ctx.strokeStyle = "rgba(150, 235, 220, 0.16)";
     ctx.stroke();
+
+    ctx.beginPath();
+    ctx.arc(
+      cx + Math.sin(time * 0.36 + cell.phase) * cell.r * 0.18,
+      cy + Math.cos(time * 0.31 + cell.phase) * cell.r * 0.16,
+      cell.r * 0.2,
+      0,
+      Math.PI * 2
+    );
+    ctx.fillStyle = "rgba(132, 189, 255, 0.13)";
+    ctx.fill();
+    ctx.lineWidth = 1;
+    ctx.strokeStyle = "rgba(180, 222, 255, 0.26)";
+    ctx.stroke();
+
+    for (let k = 0; k < 16; k += 1) {
+      const angle = (Math.PI * 2 * k) / 16 + time * 0.12 + cell.phase;
+      const rx = cx + Math.cos(angle) * (cell.r * 0.98);
+      const ry = cy + Math.sin(angle) * (cell.r * 0.98);
+      ctx.beginPath();
+      ctx.arc(rx, ry, 2.2, 0, Math.PI * 2);
+      ctx.fillStyle = "rgba(255, 178, 135, 0.35)";
+      ctx.fill();
+    }
   }
 
   for (let i = 0; i < particles.length; i += 1) {
