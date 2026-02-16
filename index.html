@@ -16,7 +16,18 @@
     />
     <link rel="stylesheet" href="styles.css" />
   </head>
-  <body>
+  <body class="is-loading">
+    <div id="intro-loader" aria-hidden="true">
+      <div class="loader-inner">
+        <p class="loader-kicker">Cocucci Lab</p>
+        <h2>Mapping Cellular Traffic</h2>
+        <p class="loader-caption">Building live membrane dynamics experience</p>
+        <div class="loader-bar">
+          <span id="loader-progress"></span>
+        </div>
+        <p id="loader-count">0%</p>
+      </div>
+    </div>
     <div class="noise-overlay" aria-hidden="true"></div>
     <div class="cursor-glow" aria-hidden="true"></div>
     <div class="aurora aurora-a" aria-hidden="true"></div>

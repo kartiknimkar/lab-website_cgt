@@ -4,6 +4,9 @@ const canvas = document.getElementById("particle-field");
 const ctx = canvas.getContext("2d");
 const cursorGlow = document.querySelector(".cursor-glow");
 const hero = document.querySelector(".hero");
+const introLoader = document.getElementById("intro-loader");
+const loaderProgress = document.getElementById("loader-progress");
+const loaderCount = document.getElementById("loader-count");
 
 let particles = [];
 const pointer = { x: window.innerWidth / 2, y: window.innerHeight / 2, active: false };
@@ -103,6 +106,30 @@ function setupReveal() {
   });
 }
 
+function setupSectionSweep() {
+  const sections = document.querySelectorAll("main .section");
+  const observer = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting || prefersReducedMotion) return;
+        const section = entry.target;
+        section.classList.remove("transition-sweep");
+        requestAnimationFrame(() => {
+          section.classList.add("transition-sweep");
+        });
+      });
+    },
+    { threshold: 0.35 }
+  );
+
+  sections.forEach((section) => {
+    section.addEventListener("animationend", () => {
+      section.classList.remove("transition-sweep");
+    });
+    observer.observe(section);
+  });
+}
+
 function setupTiltCards() {
   const cards = document.querySelectorAll(".tilt-card");
 
@@ -196,6 +223,31 @@ function setupHeroParallax() {
   );
 }
 
+function runIntroLoader() {
+  if (prefersReducedMotion || !introLoader || !loaderProgress || !loaderCount) {
+    document.body.classList.remove("is-loading");
+    document.body.classList.add("site-ready");
+    return;
+  }
+
+  let progress = 0;
+  const timer = window.setInterval(() => {
+    progress += Math.random() * 14 + 6;
+    const value = Math.min(100, Math.round(progress));
+    loaderProgress.style.width = `${value}%`;
+    loaderCount.textContent = `${value}%`;
+
+    if (value >= 100) {
+      window.clearInterval(timer);
+      window.setTimeout(() => {
+        introLoader.classList.add("is-hidden");
+        document.body.classList.remove("is-loading");
+        document.body.classList.add("site-ready");
+      }, 340);
+    }
+  }, 110);
+}
+
 window.addEventListener("resize", () => {
   sizeCanvas();
   buildParticles();
@@ -205,8 +257,10 @@ sizeCanvas();
 buildParticles();
 animateParticles();
 setupReveal();
+setupSectionSweep();
 setupTiltCards();
 setupMagneticButtons();
 setupScrollFocus();
 setupPointerTracking();
 setupHeroParallax();
+runIntroLoader();
