@@ -10,6 +10,8 @@
   --brand-orange: #ffbf3f;
   --brand-coral: #ff7f4d;
   --shadow: 0 24px 60px rgba(0, 0, 0, 0.42);
+  --camera-shift: 0px;
+  --camera-zoom: 1;
 }
 
 * {
@@ -35,6 +37,10 @@ body {
     radial-gradient(circle at 92% 14%, rgba(255, 191, 63, 0.2), transparent 30%),
     linear-gradient(160deg, var(--bg), var(--bg-soft));
   overflow-x: clip;
+}
+
+body.scene-hit .scene-flash {
+  opacity: 0.5;
 }
 
 body.is-loading {
@@ -126,6 +132,37 @@ body.site-ready .site-footer {
   inset: 0;
   z-index: -3;
   opacity: 0.6;
+}
+
+.letterbox {
+  position: fixed;
+  left: 0;
+  width: 100%;
+  height: clamp(20px, 4.5vh, 44px);
+  z-index: 60;
+  pointer-events: none;
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.9), rgba(0, 0, 0, 0.7));
+}
+
+.letterbox-top {
+  top: 0;
+}
+
+.letterbox-bottom {
+  bottom: 0;
+  transform: rotate(180deg);
+}
+
+.scene-flash {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 55;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  background:
+    radial-gradient(circle at center, rgba(82, 184, 255, 0.22), rgba(82, 184, 255, 0)),
+    radial-gradient(circle at 70% 40%, rgba(255, 191, 63, 0.15), rgba(255, 191, 63, 0));
 }
 
 .noise-overlay {
@@ -293,15 +330,22 @@ main {
   padding: 2.2rem 0 5rem;
   position: relative;
   z-index: 2;
+  transform: translate3d(0, var(--camera-shift), 0) scale(var(--camera-zoom));
+  transform-origin: 50% 8%;
+  transition: transform 0.2s linear;
 }
 
 .section {
   position: relative;
-  margin: 3.7rem 0;
+  margin: 4.8rem 0;
   padding: 0.2rem 0.2rem;
   border: 0;
   background: transparent;
   box-shadow: none;
+  min-height: min(88vh, 860px);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 
 .section::before {
@@ -353,7 +397,7 @@ main {
   grid-template-columns: 1.15fr 1fr;
   align-items: center;
   gap: 1.4rem;
-  min-height: 76vh;
+  min-height: min(92vh, 920px);
 }
 
 .eyebrow {
@@ -413,6 +457,7 @@ main {
   max-width: 470px;
   height: min(70vw, 470px);
   margin: 0 auto;
+  filter: drop-shadow(0 20px 28px rgba(0, 0, 0, 0.42));
 }
 
 .cell-scene {
@@ -678,7 +723,7 @@ h3 {
 .paper:hover,
 .timeline article:hover,
 .extras-grid article:hover {
-  transform: translateY(-10px) rotate(-0.6deg);
+  transform: translateY(-12px) rotate(-0.8deg) scale(1.02);
   border-color: rgba(82, 184, 255, 0.8);
 }
 
@@ -858,6 +903,7 @@ h3 {
 @media (max-width: 1024px) {
   .hero {
     grid-template-columns: 1fr;
+    min-height: auto;
   }
 
   .hero-visual {
@@ -896,6 +942,7 @@ h3 {
 
   .section {
     padding: 1rem;
+    min-height: auto;
   }
 
   .hero p {
@@ -914,6 +961,10 @@ h3 {
 
   .bio-ribbon {
     opacity: 0.14;
+  }
+
+  .letterbox {
+    height: 14px;
   }
 }
 
