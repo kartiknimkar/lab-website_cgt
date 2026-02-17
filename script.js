@@ -268,16 +268,26 @@ function setupParallaxLayers() {
   const layers = Array.from(document.querySelectorAll(".parallax-layer"));
   if (!layers.length || prefersReducedMotion) return;
 
+  let ticking = false;
   const update = () => {
     const scrollY = window.scrollY;
     for (const layer of layers) {
       const depth = Number(layer.dataset.depth || 0);
-      layer.style.translate = `0 ${scrollY * depth}px`;
+      layer.style.transform = `translate3d(0, ${scrollY * depth}px, 0)`;
     }
+    ticking = false;
   };
 
   update();
-  window.addEventListener("scroll", update, { passive: true });
+  window.addEventListener(
+    "scroll",
+    () => {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(update);
+    },
+    { passive: true }
+  );
 }
 
 function runIntroLoader() {
