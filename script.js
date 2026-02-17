@@ -273,7 +273,8 @@ function setupParallaxLayers() {
     const scrollY = window.scrollY;
     for (const layer of layers) {
       const depth = Number(layer.dataset.depth || 0);
-      layer.style.transform = `translate3d(0, ${scrollY * depth}px, 0)`;
+      const twist = Number(layer.dataset.twist || 0);
+      layer.style.transform = `translate3d(0, ${scrollY * depth}px, 0) rotate(${scrollY * twist}deg)`;
     }
     ticking = false;
   };
