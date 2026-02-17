@@ -3,16 +3,19 @@ const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)
 const canvas = document.getElementById("particle-field");
 const ctx = canvas.getContext("2d");
 const cursorGlow = document.querySelector(".cursor-glow");
-const hero = document.querySelector(".hero");
 const heroVisual = document.querySelector(".hero-visual");
 const introLoader = document.getElementById("intro-loader");
 const loaderProgress = document.getElementById("loader-progress");
 const loaderCount = document.getElementById("loader-count");
 
-let particles = [];
+let proteins = [];
 let vesicles = [];
 let cells = [];
-const pointer = { x: window.innerWidth / 2, y: window.innerHeight / 2, active: false };
+
+const pointer = {
+  x: window.innerWidth / 2,
+  y: window.innerHeight / 2
+};
 
 function sizeCanvas() {
   const ratio = window.devicePixelRatio || 1;
@@ -23,183 +26,161 @@ function sizeCanvas() {
   ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
 }
 
-function buildParticles() {
-  const count = Math.min(110, Math.floor(window.innerWidth / 11));
-  particles = Array.from({ length: count }, () => ({
+function buildSceneParticles() {
+  const proteinCount = Math.min(120, Math.floor(window.innerWidth / 10));
+  proteins = Array.from({ length: proteinCount }, () => ({
     x: Math.random() * window.innerWidth,
     y: Math.random() * window.innerHeight,
-    r: Math.random() * 1.5 + 0.7,
-    vx: (Math.random() - 0.5) * 0.3,
-    vy: (Math.random() - 0.5) * 0.3
+    r: Math.random() * 1.5 + 0.8,
+    vx: (Math.random() - 0.5) * 0.35,
+    vy: (Math.random() - 0.5) * 0.35
   }));
 
-  const vesicleCount = Math.min(24, Math.floor(window.innerWidth / 70));
+  const vesicleCount = Math.min(26, Math.floor(window.innerWidth / 65));
   vesicles = Array.from({ length: vesicleCount }, () => ({
     x: Math.random() * window.innerWidth,
     y: Math.random() * window.innerHeight,
-    r: Math.random() * 6 + 4,
-    vx: (Math.random() - 0.5) * 0.45,
-    vy: (Math.random() - 0.5) * 0.45,
+    r: Math.random() * 7 + 4,
+    vx: (Math.random() - 0.5) * 0.42,
+    vy: (Math.random() - 0.5) * 0.42,
     phase: Math.random() * Math.PI * 2
   }));
 
   cells = Array.from({ length: 3 }, () => ({
     x: Math.random() * window.innerWidth,
     y: Math.random() * window.innerHeight,
-    r: Math.max(160, Math.min(window.innerWidth, window.innerHeight) * (0.14 + Math.random() * 0.1)),
-    drift: (Math.random() - 0.5) * 0.22,
+    r: Math.max(170, Math.min(window.innerWidth, window.innerHeight) * (0.14 + Math.random() * 0.1)),
     phase: Math.random() * Math.PI * 2
   }));
 }
 
-function animateParticles() {
+function animateBackground() {
   if (prefersReducedMotion) return;
 
-  ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
-  const time = performance.now() * 0.001;
+  const w = window.innerWidth;
+  const h = window.innerHeight;
+  const t = performance.now() * 0.001;
+
+  ctx.clearRect(0, 0, w, h);
 
   for (const cell of cells) {
-    const wobbleX = Math.sin(time * 0.2 + cell.phase) * 24;
-    const wobbleY = Math.cos(time * 0.16 + cell.phase) * 18;
-    const cx = cell.x + wobbleX;
-    const cy = cell.y + wobbleY;
-    const gradient = ctx.createRadialGradient(cx, cy, cell.r * 0.28, cx, cy, cell.r);
-    gradient.addColorStop(0, "rgba(75, 211, 176, 0.07)");
-    gradient.addColorStop(0.55, "rgba(75, 211, 176, 0.03)");
-    gradient.addColorStop(1, "rgba(75, 211, 176, 0)");
+    const cx = cell.x + Math.sin(t * 0.18 + cell.phase) * 22;
+    const cy = cell.y + Math.cos(t * 0.14 + cell.phase) * 16;
+
+    const membrane = ctx.createRadialGradient(cx, cy, cell.r * 0.28, cx, cy, cell.r);
+    membrane.addColorStop(0, "rgba(0, 114, 178, 0.06)");
+    membrane.addColorStop(0.7, "rgba(0, 158, 115, 0.03)");
+    membrane.addColorStop(1, "rgba(0, 114, 178, 0)");
 
     ctx.beginPath();
     ctx.arc(cx, cy, cell.r, 0, Math.PI * 2);
-    ctx.fillStyle = gradient;
+    ctx.fillStyle = membrane;
     ctx.fill();
-    ctx.lineWidth = 1.2;
-    ctx.strokeStyle = "rgba(150, 235, 220, 0.16)";
+    ctx.strokeStyle = "rgba(0, 114, 178, 0.16)";
+    ctx.lineWidth = 1.1;
     ctx.stroke();
 
     ctx.beginPath();
-    ctx.arc(
-      cx + Math.sin(time * 0.36 + cell.phase) * cell.r * 0.18,
-      cy + Math.cos(time * 0.31 + cell.phase) * cell.r * 0.16,
-      cell.r * 0.2,
-      0,
-      Math.PI * 2
-    );
-    ctx.fillStyle = "rgba(132, 189, 255, 0.13)";
+    ctx.arc(cx + Math.sin(t * 0.3 + cell.phase) * cell.r * 0.2, cy + Math.cos(t * 0.27 + cell.phase) * cell.r * 0.18, cell.r * 0.19, 0, Math.PI * 2);
+    ctx.fillStyle = "rgba(0, 114, 178, 0.12)";
     ctx.fill();
-    ctx.lineWidth = 1;
-    ctx.strokeStyle = "rgba(180, 222, 255, 0.26)";
-    ctx.stroke();
-
-    for (let k = 0; k < 16; k += 1) {
-      const angle = (Math.PI * 2 * k) / 16 + time * 0.12 + cell.phase;
-      const rx = cx + Math.cos(angle) * (cell.r * 0.98);
-      const ry = cy + Math.sin(angle) * (cell.r * 0.98);
-      ctx.beginPath();
-      ctx.arc(rx, ry, 2.2, 0, Math.PI * 2);
-      ctx.fillStyle = "rgba(255, 178, 135, 0.35)";
-      ctx.fill();
-    }
   }
 
-  for (let i = 0; i < particles.length; i += 1) {
-    const p = particles[i];
+  for (let i = 0; i < proteins.length; i += 1) {
+    const p = proteins[i];
 
-    const dxPointer = pointer.x - p.x;
-    const dyPointer = pointer.y - p.y;
-    const pointerDist = Math.hypot(dxPointer, dyPointer) || 1;
-    const pointerPull = Math.max(0, 120 - pointerDist) / 4200;
+    const dxp = pointer.x - p.x;
+    const dyp = pointer.y - p.y;
+    const dist = Math.hypot(dxp, dyp) || 1;
+    const pull = Math.max(0, 120 - dist) / 4300;
 
-    p.vx += (dxPointer / pointerDist) * pointerPull;
-    p.vy += (dyPointer / pointerDist) * pointerPull;
-    p.vx *= 0.991;
-    p.vy *= 0.991;
-
+    p.vx += (dxp / dist) * pull;
+    p.vy += (dyp / dist) * pull;
+    p.vx *= 0.99;
+    p.vy *= 0.99;
     p.x += p.vx;
     p.y += p.vy;
 
-    if (p.x < -10) p.x = window.innerWidth + 10;
-    if (p.x > window.innerWidth + 10) p.x = -10;
-    if (p.y < -10) p.y = window.innerHeight + 10;
-    if (p.y > window.innerHeight + 10) p.y = -10;
+    if (p.x < -12) p.x = w + 12;
+    if (p.x > w + 12) p.x = -12;
+    if (p.y < -12) p.y = h + 12;
+    if (p.y > h + 12) p.y = -12;
 
     ctx.beginPath();
     ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-    ctx.fillStyle = "rgba(255, 188, 145, 0.82)";
+    ctx.fillStyle = "rgba(213, 94, 0, 0.75)";
     ctx.fill();
 
-    for (let j = i + 1; j < particles.length; j += 1) {
-      const q = particles[j];
-      const dx = p.x - q.x;
-      const dy = p.y - q.y;
-      const dist = Math.hypot(dx, dy);
-      if (dist < 92) {
-        const alpha = (1 - dist / 92) * 0.24;
+    for (let j = i + 1; j < proteins.length; j += 1) {
+      const q = proteins[j];
+      const d = Math.hypot(p.x - q.x, p.y - q.y);
+      if (d < 88) {
+        const a = (1 - d / 88) * 0.18;
         ctx.beginPath();
         ctx.moveTo(p.x, p.y);
         ctx.lineTo(q.x, q.y);
-        ctx.strokeStyle = `rgba(255, 160, 115, ${alpha})`;
+        ctx.strokeStyle = `rgba(230, 159, 0, ${a})`;
         ctx.lineWidth = 0.9;
         ctx.stroke();
       }
     }
   }
 
-  for (const vesicle of vesicles) {
-    const dxPointer = pointer.x - vesicle.x;
-    const dyPointer = pointer.y - vesicle.y;
-    const distPointer = Math.hypot(dxPointer, dyPointer) || 1;
-    const pull = Math.max(0, 160 - distPointer) / 7200;
+  for (const v of vesicles) {
+    const dxp = pointer.x - v.x;
+    const dyp = pointer.y - v.y;
+    const dist = Math.hypot(dxp, dyp) || 1;
+    const pull = Math.max(0, 150 - dist) / 7200;
 
-    vesicle.vx += (dxPointer / distPointer) * pull;
-    vesicle.vy += (dyPointer / distPointer) * pull;
-    vesicle.vx *= 0.985;
-    vesicle.vy *= 0.985;
+    v.vx += (dxp / dist) * pull;
+    v.vy += (dyp / dist) * pull;
+    v.vx *= 0.986;
+    v.vy *= 0.986;
 
-    vesicle.x += vesicle.vx + Math.sin(time + vesicle.phase) * 0.18;
-    vesicle.y += vesicle.vy + Math.cos(time * 1.1 + vesicle.phase) * 0.18;
+    v.x += v.vx + Math.sin(t + v.phase) * 0.2;
+    v.y += v.vy + Math.cos(t * 1.08 + v.phase) * 0.2;
 
-    if (vesicle.x < -30) vesicle.x = window.innerWidth + 30;
-    if (vesicle.x > window.innerWidth + 30) vesicle.x = -30;
-    if (vesicle.y < -30) vesicle.y = window.innerHeight + 30;
-    if (vesicle.y > window.innerHeight + 30) vesicle.y = -30;
+    if (v.x < -24) v.x = w + 24;
+    if (v.x > w + 24) v.x = -24;
+    if (v.y < -24) v.y = h + 24;
+    if (v.y > h + 24) v.y = -24;
 
     ctx.beginPath();
-    ctx.arc(vesicle.x, vesicle.y, vesicle.r, 0, Math.PI * 2);
-    ctx.fillStyle = "rgba(140, 243, 220, 0.14)";
+    ctx.arc(v.x, v.y, v.r, 0, Math.PI * 2);
+    ctx.fillStyle = "rgba(0, 158, 115, 0.1)";
     ctx.fill();
-    ctx.lineWidth = 1.5;
-    ctx.strokeStyle = "rgba(175, 255, 236, 0.72)";
+    ctx.strokeStyle = "rgba(0, 114, 178, 0.45)";
+    ctx.lineWidth = 1.35;
     ctx.stroke();
 
     ctx.beginPath();
-    ctx.arc(vesicle.x + vesicle.r * 0.15, vesicle.y - vesicle.r * 0.12, vesicle.r * 0.32, 0, Math.PI * 2);
-    ctx.fillStyle = "rgba(210, 255, 246, 0.78)";
+    ctx.arc(v.x + v.r * 0.14, v.y - v.r * 0.1, v.r * 0.3, 0, Math.PI * 2);
+    ctx.fillStyle = "rgba(255, 255, 255, 0.8)";
     ctx.fill();
   }
 
-  requestAnimationFrame(animateParticles);
+  requestAnimationFrame(animateBackground);
 }
 
 function setupReveal() {
   const observer = new IntersectionObserver(
     (entries) => {
       entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add("is-visible");
-          const staggerGroup = entry.target.querySelector(".stagger-group");
-          if (staggerGroup) staggerGroup.classList.add("is-visible");
-          observer.unobserve(entry.target);
-        }
+        if (!entry.isIntersecting) return;
+        entry.target.classList.add("is-visible");
+        const stagger = entry.target.querySelector(".stagger-group");
+        if (stagger) stagger.classList.add("is-visible");
+        observer.unobserve(entry.target);
       });
     },
-    { threshold: 0.16 }
+    { threshold: 0.14 }
   );
 
   document.querySelectorAll(".reveal").forEach((el) => observer.observe(el));
 
   document.querySelectorAll(".stagger-group").forEach((group) => {
     Array.from(group.children).forEach((item, index) => {
-      item.style.setProperty("--delay", `${index * 90}ms`);
+      item.style.setProperty("--delay", `${index * 85}ms`);
     });
   });
 }
@@ -210,40 +191,30 @@ function setupSectionSweep() {
     (entries) => {
       entries.forEach((entry) => {
         if (!entry.isIntersecting || prefersReducedMotion) return;
-        const section = entry.target;
-        section.classList.remove("transition-sweep");
-        requestAnimationFrame(() => {
-          section.classList.add("transition-sweep");
-        });
+        entry.target.classList.remove("transition-sweep");
+        requestAnimationFrame(() => entry.target.classList.add("transition-sweep"));
       });
     },
-    { threshold: 0.35 }
+    { threshold: 0.32 }
   );
 
   sections.forEach((section) => {
-    section.addEventListener("animationend", () => {
-      section.classList.remove("transition-sweep");
-    });
+    section.addEventListener("animationend", () => section.classList.remove("transition-sweep"));
     observer.observe(section);
   });
 }
 
 function setupTiltCards() {
-  const cards = document.querySelectorAll(".tilt-card");
-
-  cards.forEach((card) => {
+  document.querySelectorAll(".tilt-card").forEach((card) => {
     card.addEventListener("pointermove", (event) => {
       if (prefersReducedMotion) return;
-
       const rect = card.getBoundingClientRect();
       const x = event.clientX - rect.left;
       const y = event.clientY - rect.top;
-      const cx = rect.width / 2;
-      const cy = rect.height / 2;
+      const rx = ((y - rect.height / 2) / rect.height) * -7;
+      const ry = ((x - rect.width / 2) / rect.width) * 8;
 
-      const rotateX = ((y - cy) / cy) * -5;
-      const rotateY = ((x - cx) / cx) * 6;
-      card.style.transform = `perspective(900px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-4px)`;
+      card.style.transform = `perspective(860px) rotateX(${rx}deg) rotateY(${ry}deg) translateY(-4px)`;
       card.style.setProperty("--mx", `${(x / rect.width) * 100}%`);
       card.style.setProperty("--my", `${(y / rect.height) * 100}%`);
     });
@@ -255,76 +226,58 @@ function setupTiltCards() {
 }
 
 function setupMagneticButtons() {
-  document.querySelectorAll(".magnetic").forEach((element) => {
-    element.addEventListener("pointermove", (event) => {
+  document.querySelectorAll(".magnetic").forEach((el) => {
+    el.addEventListener("pointermove", (event) => {
       if (prefersReducedMotion) return;
-
-      const rect = element.getBoundingClientRect();
+      const rect = el.getBoundingClientRect();
       const x = event.clientX - (rect.left + rect.width / 2);
       const y = event.clientY - (rect.top + rect.height / 2);
-
-      element.style.transform = `translate(${x * 0.14}px, ${y * 0.2}px)`;
+      el.style.transform = `translate(${x * 0.11}px, ${y * 0.16}px)`;
     });
-
-    element.addEventListener("pointerleave", () => {
-      element.style.transform = "";
+    el.addEventListener("pointerleave", () => {
+      el.style.transform = "";
     });
   });
-}
-
-function setupScrollFocus() {
-  const sections = document.querySelectorAll("main .section");
-  const updateFocus = () => {
-    const checkpoint = window.innerHeight * 0.45;
-    sections.forEach((section) => {
-      const rect = section.getBoundingClientRect();
-      const isFocused = rect.top <= checkpoint && rect.bottom >= checkpoint;
-      section.classList.toggle("in-focus", isFocused);
-    });
-  };
-
-  updateFocus();
-  window.addEventListener("scroll", updateFocus, { passive: true });
 }
 
 function setupPointerTracking() {
   const updatePointer = (x, y) => {
     pointer.x = x;
     pointer.y = y;
+
     if (heroVisual) {
-      const rx = ((x / window.innerWidth) - 0.5) * 14;
-      const ry = ((y / window.innerHeight) - 0.5) * 14;
-      heroVisual.style.setProperty("--hero-x", `${rx}px`);
-      heroVisual.style.setProperty("--hero-y", `${ry}px`);
+      const px = ((x / window.innerWidth) - 0.5) * 14;
+      const py = ((y / window.innerHeight) - 0.5) * 14;
+      heroVisual.style.setProperty("--hero-x", `${px}px`);
+      heroVisual.style.setProperty("--hero-y", `${py}px`);
     }
+
     if (cursorGlow) {
       cursorGlow.style.opacity = "1";
       cursorGlow.style.transform = `translate(${x}px, ${y}px)`;
     }
   };
 
-  window.addEventListener("mousemove", (event) => {
-    pointer.active = true;
-    updatePointer(event.clientX, event.clientY);
-  });
-
+  window.addEventListener("mousemove", (event) => updatePointer(event.clientX, event.clientY));
   window.addEventListener("touchmove", (event) => {
-    if (event.touches[0]) {
-      updatePointer(event.touches[0].clientX, event.touches[0].clientY);
-    }
+    if (event.touches[0]) updatePointer(event.touches[0].clientX, event.touches[0].clientY);
   });
 }
 
-function setupHeroParallax() {
-  if (!hero || prefersReducedMotion) return;
-  window.addEventListener(
-    "scroll",
-    () => {
-      const y = window.scrollY * 0.16;
-      hero.style.transform = `translateY(${y}px)`;
-    },
-    { passive: true }
-  );
+function setupParallaxLayers() {
+  const layers = Array.from(document.querySelectorAll(".parallax-layer"));
+  if (!layers.length || prefersReducedMotion) return;
+
+  const update = () => {
+    const scrollY = window.scrollY;
+    for (const layer of layers) {
+      const depth = Number(layer.dataset.depth || 0);
+      layer.style.translate = `0 ${scrollY * depth}px`;
+    }
+  };
+
+  update();
+  window.addEventListener("scroll", update, { passive: true });
 }
 
 function runIntroLoader() {
@@ -336,7 +289,7 @@ function runIntroLoader() {
 
   let progress = 0;
   const timer = window.setInterval(() => {
-    progress += Math.random() * 14 + 6;
+    progress += Math.random() * 12 + 7;
     const value = Math.min(100, Math.round(progress));
     loaderProgress.style.width = `${value}%`;
     loaderCount.textContent = `${value}%`;
@@ -349,22 +302,21 @@ function runIntroLoader() {
         document.body.classList.add("site-ready");
       }, 340);
     }
-  }, 110);
+  }, 95);
 }
 
 window.addEventListener("resize", () => {
   sizeCanvas();
-  buildParticles();
+  buildSceneParticles();
 });
 
 sizeCanvas();
-buildParticles();
-animateParticles();
+buildSceneParticles();
+animateBackground();
 setupReveal();
 setupSectionSweep();
 setupTiltCards();
 setupMagneticButtons();
-setupScrollFocus();
 setupPointerTracking();
-setupHeroParallax();
+setupParallaxLayers();
 runIntroLoader();
