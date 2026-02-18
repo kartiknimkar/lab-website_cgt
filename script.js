@@ -205,24 +205,6 @@ function setupSectionSweep() {
   });
 }
 
-function setupSceneCuts() {
-  if (prefersReducedMotion) return;
-  const sections = document.querySelectorAll("main .section");
-  const observer = new IntersectionObserver(
-    (entries) => {
-      entries.forEach((entry) => {
-        if (!entry.isIntersecting) return;
-        document.body.classList.add("scene-hit");
-        window.setTimeout(() => {
-          document.body.classList.remove("scene-hit");
-        }, 210);
-      });
-    },
-    { threshold: 0.55 }
-  );
-  sections.forEach((section) => observer.observe(section));
-}
-
 function setupTiltCards() {
   document.querySelectorAll(".tilt-card").forEach((card) => {
     card.addEventListener("pointermove", (event) => {
@@ -302,35 +284,8 @@ function setupParallaxLayers() {
     const scrollY = window.scrollY;
     for (const layer of layers) {
       const depth = Number(layer.dataset.depth || 0);
-      const twist = Number(layer.dataset.twist || 0);
-      layer.style.transform = `translate3d(0, ${scrollY * depth * 1.45}px, 0) rotate(${scrollY * twist}deg)`;
+      layer.style.transform = `translate3d(0, ${scrollY * depth * 0.5}px, 0)`;
     }
-    ticking = false;
-  };
-
-  update();
-  window.addEventListener(
-    "scroll",
-    () => {
-      if (ticking) return;
-      ticking = true;
-      requestAnimationFrame(update);
-    },
-    { passive: true }
-  );
-}
-
-function setupCinematicCamera() {
-  if (prefersReducedMotion) return;
-  let ticking = false;
-  const maxScroll = () => Math.max(1, document.documentElement.scrollHeight - window.innerHeight);
-
-  const update = () => {
-    const progress = window.scrollY / maxScroll();
-    const shift = -40 * progress;
-    const zoom = 1 + progress * 0.055;
-    document.documentElement.style.setProperty("--camera-shift", `${shift}px`);
-    document.documentElement.style.setProperty("--camera-zoom", zoom.toFixed(4));
     ticking = false;
   };
 
@@ -385,7 +340,5 @@ setupTiltCards();
 setupMagneticButtons();
 setupPointerTracking();
 setupParallaxLayers();
-setupSceneCuts();
-setupCinematicCamera();
 setupHeroVideo();
 runIntroLoader();
