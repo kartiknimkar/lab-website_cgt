@@ -52,6 +52,22 @@
 
     <main id="top">
       <section class="hero section reveal">
+        <div class="hero-media parallax-layer" data-depth="0.28" data-twist="0.008">
+          <video
+            class="hero-video"
+            id="hero-video"
+            autoplay
+            muted
+            loop
+            playsinline
+            preload="metadata"
+            poster=""
+          >
+            <source src="assets/hero-cell-video.mp4" type="video/mp4" />
+          </video>
+          <div class="hero-video-fallback" aria-hidden="true"></div>
+          <div class="hero-vignette" aria-hidden="true"></div>
+        </div>
         <div class="hero-copy">
           <p class="eyebrow">The Ohio State University • College of Pharmacy</p>
           <h1>
@@ -67,37 +83,6 @@
           <div class="hero-actions">
             <a class="btn btn-solid magnetic" href="#research">Research Themes</a>
             <a class="btn btn-ghost magnetic" href="#papers">Featured Papers</a>
-          </div>
-        </div>
-        <div class="hero-visual" aria-hidden="true">
-          <div class="cell-scene">
-            <div class="cell-main parallax-layer" data-depth="0.34" data-twist="0.015">
-              <span class="nucleus"></span>
-              <span class="organelle o1"></span>
-              <span class="organelle o2"></span>
-              <span class="organelle o3"></span>
-              <span class="organelle o4"></span>
-              <span class="receptor r1"></span>
-              <span class="receptor r2"></span>
-              <span class="receptor r3"></span>
-              <span class="receptor r4"></span>
-            </div>
-            <div class="cell-secondary parallax-layer" data-depth="-0.36" data-twist="-0.02">
-              <span class="nucleus"></span>
-              <span class="receptor r1"></span>
-              <span class="receptor r2"></span>
-            </div>
-            <div class="vesicle-stream parallax-layer" data-depth="0.55" data-twist="0.03">
-              <span class="ev ev1"></span>
-              <span class="ev ev2"></span>
-              <span class="ev ev3"></span>
-              <span class="ev ev4"></span>
-              <span class="ev ev5"></span>
-            </div>
-          </div>
-          <div class="hero-metrics parallax-layer" data-depth="-0.3" data-twist="-0.012">
-            <p><strong>20+</strong> years in membrane biology</p>
-            <p><strong>Multi-scale</strong> imaging + translational science</p>
           </div>
         </div>
       </section>

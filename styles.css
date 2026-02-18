@@ -393,11 +393,53 @@ main {
 }
 
 .hero {
-  display: grid;
-  grid-template-columns: 1.15fr 1fr;
-  align-items: center;
-  gap: 1.4rem;
+  position: relative;
+  overflow: hidden;
+  border-radius: 2rem;
   min-height: min(92vh, 920px);
+  padding: clamp(1.4rem, 4vw, 3rem);
+  border: 1px solid rgba(172, 202, 241, 0.25);
+}
+
+.hero-media {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+}
+
+.hero-video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  background: #05070d;
+  filter: saturate(0.82) contrast(1.08) brightness(0.5);
+}
+
+.hero-video-fallback {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 40% 35%, rgba(50, 90, 160, 0.32), rgba(4, 6, 12, 0.96));
+  transition: opacity 0.45s ease;
+}
+
+.hero-media.has-video .hero-video-fallback {
+  opacity: 0;
+}
+
+.hero-vignette {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(90deg, rgba(3, 8, 18, 0.92) 0%, rgba(3, 8, 18, 0.56) 45%, rgba(3, 8, 18, 0.88) 100%),
+    linear-gradient(180deg, rgba(3, 8, 18, 0.76), rgba(3, 8, 18, 0.2) 32%, rgba(3, 8, 18, 0.82));
+}
+
+.hero-copy {
+  position: relative;
+  z-index: 4;
+  max-width: min(760px, 90%);
+  margin-top: clamp(2rem, 8vh, 5rem);
 }
 
 .eyebrow {
@@ -422,7 +464,7 @@ main {
 }
 
 .hero p {
-  color: var(--muted);
+  color: #d5e2f7;
   max-width: 64ch;
   font-size: 1.06rem;
 }
@@ -446,183 +488,7 @@ main {
 .btn-ghost {
   color: var(--ink);
   border: 1px solid rgba(172, 202, 241, 0.45);
-  background: rgba(19, 33, 60, 0.62);
-}
-
-.hero-visual {
-  --hero-x: 0px;
-  --hero-y: 0px;
-  position: relative;
-  width: 100%;
-  max-width: 470px;
-  height: min(70vw, 470px);
-  margin: 0 auto;
-  filter: drop-shadow(0 20px 28px rgba(0, 0, 0, 0.42));
-}
-
-.cell-scene {
-  position: absolute;
-  inset: 0;
-  transform: translate(var(--hero-x), var(--hero-y));
-  transition: transform 0.14s ease-out;
-}
-
-.cell-main,
-.cell-secondary {
-  position: absolute;
-  border-radius: 44% 56% 47% 53% / 50% 42% 58% 50%;
-  border: 2px solid rgba(0, 114, 178, 0.5);
-  background:
-    radial-gradient(circle at 32% 28%, rgba(255, 255, 255, 0.8), transparent 42%),
-    radial-gradient(circle at 68% 72%, rgba(230, 159, 0, 0.22), transparent 38%),
-    radial-gradient(circle at center, rgba(0, 158, 115, 0.14), rgba(0, 114, 178, 0.09));
-  box-shadow:
-    inset 0 0 0 10px rgba(0, 114, 178, 0.07),
-    inset 0 0 35px rgba(0, 158, 115, 0.18),
-    0 12px 28px rgba(17, 56, 95, 0.18);
-  animation: membraneWave 8s ease-in-out infinite;
-}
-
-.cell-main {
-  width: 70%;
-  height: 66%;
-  left: 3%;
-  top: 16%;
-}
-
-.cell-secondary {
-  width: 37%;
-  height: 35%;
-  right: 3%;
-  top: 7%;
-  animation-delay: -2.3s;
-}
-
-.nucleus {
-  position: absolute;
-  width: 30%;
-  height: 30%;
-  left: 34%;
-  top: 33%;
-  border-radius: 50%;
-  border: 1px solid rgba(255, 255, 255, 0.92);
-  background:
-    radial-gradient(circle at 30% 26%, rgba(255, 255, 255, 0.9), rgba(0, 114, 178, 0.35)),
-    radial-gradient(circle at 75% 78%, rgba(0, 158, 115, 0.45), transparent 45%);
-}
-
-.organelle {
-  position: absolute;
-  border-radius: 48% 52% 43% 57%;
-  border: 1px solid rgba(213, 94, 0, 0.55);
-  background: rgba(230, 159, 0, 0.35);
-  animation: organelleDrift 6s ease-in-out infinite;
-}
-
-.o1 {
-  left: 18%;
-  top: 25%;
-  width: 11%;
-  height: 8%;
-}
-
-.o2 {
-  left: 62%;
-  top: 22%;
-  width: 9%;
-  height: 7%;
-  animation-delay: -1s;
-}
-
-.o3 {
-  left: 58%;
-  top: 62%;
-  width: 12%;
-  height: 8%;
-  animation-delay: -2.1s;
-}
-
-.o4 {
-  left: 23%;
-  top: 60%;
-  width: 10%;
-  height: 7%;
-  animation-delay: -2.8s;
-}
-
-.receptor {
-  position: absolute;
-  width: 3%;
-  height: 9%;
-  border-radius: 999px;
-  background: linear-gradient(180deg, #ffedd2, var(--brand-coral));
-  box-shadow: 0 0 8px rgba(213, 94, 0, 0.45);
-  transform-origin: center bottom;
-  animation: receptorWiggle 2.8s ease-in-out infinite;
-}
-
-.r1 {
-  left: 8%;
-  top: 46%;
-}
-
-.r2 {
-  right: 10%;
-  top: 42%;
-  animation-delay: -1.2s;
-}
-
-.r3 {
-  left: 42%;
-  top: 7%;
-  transform: rotate(90deg);
-  animation-delay: -0.6s;
-}
-
-.r4 {
-  left: 44%;
-  bottom: 5%;
-  transform: rotate(90deg);
-  animation-delay: -1.5s;
-}
-
-.vesicle-stream {
-  position: absolute;
-  left: 56%;
-  top: 30%;
-  width: 40%;
-  height: 44%;
-}
-
-.ev {
-  position: absolute;
-  width: 14%;
-  aspect-ratio: 1;
-  border-radius: 50%;
-  border: 1px solid rgba(0, 114, 178, 0.6);
-  background: radial-gradient(circle at 35% 30%, rgba(255, 255, 255, 0.96), rgba(0, 158, 115, 0.35));
-  box-shadow: 0 0 12px rgba(0, 114, 178, 0.2);
-  animation: vesiclePath 6s linear infinite;
-}
-
-.ev1 {
-  animation-delay: 0s;
-}
-
-.ev2 {
-  animation-delay: -1.2s;
-}
-
-.ev3 {
-  animation-delay: -2.4s;
-}
-
-.ev4 {
-  animation-delay: -3.6s;
-}
-
-.ev5 {
-  animation-delay: -4.8s;
+  background: rgba(19, 33, 60, 0.4);
 }
 
 .hero-metrics {
@@ -850,65 +716,9 @@ h3 {
   }
 }
 
-@keyframes membraneWave {
-  0%,
-  100% {
-    border-radius: 44% 56% 47% 53% / 50% 42% 58% 50%;
-  }
-  50% {
-    border-radius: 52% 48% 54% 46% / 43% 57% 45% 55%;
-  }
-}
-
-@keyframes organelleDrift {
-  0%,
-  100% {
-    transform: translate(0, 0);
-  }
-  50% {
-    transform: translate(3px, -4px);
-  }
-}
-
-@keyframes receptorWiggle {
-  0%,
-  100% {
-    transform: translateY(0) rotate(0deg);
-  }
-  50% {
-    transform: translateY(-2px) rotate(8deg);
-  }
-}
-
-@keyframes vesiclePath {
-  0%,
-  8% {
-    opacity: 0;
-    transform: translate(0, 16px) scale(0.55);
-  }
-  20% {
-    opacity: 1;
-    transform: translate(8px, 4px) scale(0.9);
-  }
-  60% {
-    opacity: 1;
-    transform: translate(46px, -26px) scale(1.06);
-  }
-  100% {
-    opacity: 0;
-    transform: translate(88px, -60px) scale(0.72);
-  }
-}
-
 @media (max-width: 1024px) {
   .hero {
-    grid-template-columns: 1fr;
     min-height: auto;
-  }
-
-  .hero-visual {
-    order: -1;
-    height: min(80vw, 430px);
   }
 
   .hero-metrics {
@@ -947,12 +757,6 @@ h3 {
 
   .hero p {
     font-size: 1rem;
-  }
-
-  .receptor.r3,
-  .receptor.r4,
-  .cell-secondary {
-    display: none;
   }
 
   .cursor-glow {

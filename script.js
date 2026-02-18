@@ -3,7 +3,8 @@ const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)
 const canvas = document.getElementById("particle-field");
 const ctx = canvas.getContext("2d");
 const cursorGlow = document.querySelector(".cursor-glow");
-const heroVisual = document.querySelector(".hero-visual");
+const heroVideo = document.getElementById("hero-video");
+const heroMedia = document.querySelector(".hero-media");
 const introLoader = document.getElementById("intro-loader");
 const loaderProgress = document.getElementById("loader-progress");
 const loaderCount = document.getElementById("loader-count");
@@ -263,13 +264,6 @@ function setupPointerTracking() {
     pointer.x = x;
     pointer.y = y;
 
-    if (heroVisual) {
-      const px = ((x / window.innerWidth) - 0.5) * 14;
-      const py = ((y / window.innerHeight) - 0.5) * 14;
-      heroVisual.style.setProperty("--hero-x", `${px}px`);
-      heroVisual.style.setProperty("--hero-y", `${py}px`);
-    }
-
     if (cursorGlow) {
       cursorGlow.style.opacity = "1";
       cursorGlow.style.transform = `translate(${x}px, ${y}px)`;
@@ -280,6 +274,23 @@ function setupPointerTracking() {
   window.addEventListener("touchmove", (event) => {
     if (event.touches[0]) updatePointer(event.touches[0].clientX, event.touches[0].clientY);
   });
+}
+
+function setupHeroVideo() {
+  if (!heroVideo || !heroMedia) return;
+
+  const onReady = () => heroMedia.classList.add("has-video");
+  heroVideo.addEventListener("loadeddata", onReady, { once: true });
+  heroVideo.addEventListener("canplay", onReady, { once: true });
+
+  const tryPlay = async () => {
+    try {
+      await heroVideo.play();
+    } catch {
+      // Browser blocked autoplay; fallback overlay remains visible.
+    }
+  };
+  tryPlay();
 }
 
 function setupParallaxLayers() {
@@ -376,4 +387,5 @@ setupPointerTracking();
 setupParallaxLayers();
 setupSceneCuts();
 setupCinematicCamera();
+setupHeroVideo();
 runIntroLoader();
