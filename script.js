@@ -17,6 +17,8 @@ const pointer = {
   x: window.innerWidth / 2,
   y: window.innerHeight / 2
 };
+const ambientEnabled =
+  !prefersReducedMotion && canvas && window.getComputedStyle(canvas).display !== "none";
 
 function sizeCanvas() {
   const ratio = window.devicePixelRatio || 1;
@@ -56,7 +58,7 @@ function buildSceneParticles() {
 }
 
 function animateBackground() {
-  if (prefersReducedMotion) return;
+  if (!ambientEnabled) return;
 
   const w = window.innerWidth;
   const h = window.innerHeight;
@@ -327,13 +329,16 @@ function runIntroLoader() {
 }
 
 window.addEventListener("resize", () => {
+  if (!ambientEnabled) return;
   sizeCanvas();
   buildSceneParticles();
 });
 
-sizeCanvas();
-buildSceneParticles();
-animateBackground();
+if (ambientEnabled) {
+  sizeCanvas();
+  buildSceneParticles();
+  animateBackground();
+}
 setupReveal();
 setupSectionSweep();
 setupTiltCards();
