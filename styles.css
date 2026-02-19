@@ -7,6 +7,10 @@
   --line: rgba(79, 60, 40, 0.2);
   --accent: #8d6a4a;
   --accent-soft: #d7b89e;
+  --accent-blue: #6f8fb8;
+  --accent-teal: #86b7ae;
+  --accent-peach: #e4b89f;
+  --accent-lavender: #c5b9de;
   --shadow: 0 16px 34px rgba(35, 24, 14, 0.12);
 }
 

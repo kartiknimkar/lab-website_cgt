@@ -341,8 +341,6 @@ if (ambientEnabled) {
 }
 setupReveal();
 setupSectionSweep();
-setupTiltCards();
-setupMagneticButtons();
 setupPointerTracking();
 setupParallaxLayers();
 setupHeroVideo();
